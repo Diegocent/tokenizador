@@ -283,10 +283,8 @@ class Tokenizador:
         turnos = [t.strip() for t in turnos if t.strip()]
         
         resultados = {
-            "tokens_agente": [],
-            "tokens_cliente": [],
-            "sentimiento_agente": None,
-            "sentimiento_cliente": None,
+            "tokens_totales": [],  # Para el análisis de sentimiento general
+            "tokens_agente": [],   # Solo para verificación de protocolo
             "protocolo": None
         }
         
@@ -294,27 +292,25 @@ class Tokenizador:
         while i < len(turnos):
             if turnos[i] == "Agente:" and i + 1 < len(turnos):
                 # Procesar turno del agente
-                tokens_agente = self.tokenizar(turnos[i + 1])
-                resultados["tokens_agente"].extend(tokens_agente)
+                tokens = self.tokenizar(turnos[i + 1])
+                resultados["tokens_totales"].extend(tokens)
+                resultados["tokens_agente"].extend(tokens)  # Guardamos aparte para protocolo
                 i += 2
             elif turnos[i] == "Cliente:" and i + 1 < len(turnos):
                 # Procesar turno del cliente
-                tokens_cliente = self.tokenizar(turnos[i + 1])
-                resultados["tokens_cliente"].extend(tokens_cliente)
+                tokens = self.tokenizar(turnos[i + 1])
+                resultados["tokens_totales"].extend(tokens)
                 i += 2
             else:
                 i += 1
         
-        # Analizar sentimiento
-        if resultados["tokens_agente"]:
-            resultados["sentimiento_agente"] = self.analizar_sentimiento(resultados["tokens_agente"])
+        # Analizar sentimiento general (combinando agente y cliente)
+        if resultados["tokens_totales"]:
+            resultados["sentimiento_general"] = self.analizar_sentimiento(resultados["tokens_totales"])
         
-        if resultados["tokens_cliente"]:
-            resultados["sentimiento_cliente"] = self.analizar_sentimiento(resultados["tokens_cliente"])
-        
-        # Verificar protocolo
+        # Verificar protocolo (solo con los tokens del agente)
         if resultados["tokens_agente"]:
-            resultados["protocolo"] = self.verificar_protocolo(resultados["tokens_agente"])
+            resultados["protocolo"] = self.verificar_protocolo(resultados["tokens_agente"], es_agente=True)
         
         return resultados
     
@@ -322,10 +318,10 @@ class Tokenizador:
         """Genera un reporte basado en los resultados del procesamiento"""
         reporte = "=== REPORTE DE ANÁLISIS DE CONVERSACIÓN ===\n\n"
         
-        # Reporte de sentimiento del agente
-        if resultados["sentimiento_agente"]:
-            s = resultados["sentimiento_agente"]
-            reporte += "SENTIMIENTO DEL AGENTE:\n"
+        # Reporte de sentimiento general (combinado)
+        if "sentimiento_general" in resultados:
+            s = resultados["sentimiento_general"]
+            reporte += "SENTIMIENTO GENERAL DE LA CONVERSACIÓN:\n"
             reporte += f"Sentimiento general: {s['sentimiento']} ({s['puntuacion_total']})\n"
             reporte += f"Palabras positivas: {s['palabras_positivas']}\n"
             if s['palabra_mas_positiva']:
@@ -335,22 +331,9 @@ class Tokenizador:
                 reporte += f"Palabra más negativa: {s['palabra_mas_negativa'][0]}, {s['palabra_mas_negativa'][1]}\n"
             reporte += "\n"
         
-        # Reporte de sentimiento del cliente
-        if resultados["sentimiento_cliente"]:
-            s = resultados["sentimiento_cliente"]
-            reporte += "SENTIMIENTO DEL CLIENTE:\n"
-            reporte += f"Sentimiento general: {s['sentimiento']} ({s['puntuacion_total']})\n"
-            reporte += f"Palabras positivas: {s['palabras_positivas']}\n"
-            if s['palabra_mas_positiva']:
-                reporte += f"Palabra más positiva: {s['palabra_mas_positiva'][0]}, +{s['palabra_mas_positiva'][1]}\n"
-            reporte += f"Palabras negativas: {s['palabras_negativas']}\n"
-            if s['palabra_mas_negativa']:
-                reporte += f"Palabra más negativa: {s['palabra_mas_negativa'][0]}, {s['palabra_mas_negativa'][1]}\n"
-            reporte += "\n"
-        
-        # Reporte de protocolo
-        if resultados["protocolo"]:
-            reporte += "VERIFICACIÓN DEL PROTOCOLO DE ATENCIÓN:\n"
+        # Reporte de protocolo (solo para el agente)
+        if resultados.get("protocolo"):
+            reporte += "VERIFICACIÓN DEL PROTOCOLO DE ATENCIÓN (AGENTE):\n"
             for fase, estado in resultados["protocolo"].items():
                 reporte += f"{fase}: {estado}\n"
         
