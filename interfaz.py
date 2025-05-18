@@ -6,7 +6,9 @@ class InterfazTokenizador:
     def __init__(self, root):
         self.root = root
         self.root.title("Tokenizador para Contact Centers")
-        self.root.geometry("900x700")
+        
+        # Centrar la ventana principal
+        self.centrar_ventana(900, 700)
         
         # Inicializar tokenizador
         self.tokenizador = Tokenizador()
@@ -14,6 +16,17 @@ class InterfazTokenizador:
         # Crear interfaz
         self.crear_interfaz()
     
+    def centrar_ventana(self, ancho, alto):
+        """Centra la ventana principal en la pantalla"""
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        x = (screen_width // 2) - (ancho // 2)
+        y = (screen_height // 2) - (alto // 2)
+        
+        self.root.geometry(f'{ancho}x{alto}+{x}+{y}')
+    
+    # [El resto de los métodos permanecen EXACTAMENTE igual que en tu versión original]
     def crear_interfaz(self):
         # Frame principal
         main_frame = tk.Frame(self.root, padx=10, pady=10)

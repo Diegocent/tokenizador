@@ -5,6 +5,77 @@ import re
 import os
 import numpy as np
 from collections import defaultdict
+from tkinter import ttk
+
+class TokenDialog(tk.Toplevel):
+    def __init__(self, parent, title, prompt, tokens_disponibles):
+        super().__init__(parent)
+        self.title(title)
+        self.attributes('-topmost', True)
+        self.resizable(False, False)
+        
+        # Configuración para centrar la ventana
+        window_width = 450
+        window_height = 180
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+        
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        
+        self.result = None
+        self.tokens_disponibles = tokens_disponibles
+        
+        # Frame principal para mejor organización
+        main_frame = tk.Frame(self, padx=15, pady=15)
+        main_frame.pack(expand=True, fill=tk.BOTH)
+        
+        # Etiqueta con la pregunta
+        lbl_prompt = tk.Label(main_frame, text=prompt, wraplength=400, justify=tk.LEFT)
+        lbl_prompt.pack(pady=(0, 10), anchor=tk.W)
+        
+        # Combobox con estilo mejorado
+        self.combo = ttk.Combobox(main_frame)
+        self.combo.pack(fill=tk.X, pady=5)
+        self.combo['values'] = list(tokens_disponibles)
+        self.combo.set("")
+        self.combo.focus_set()
+        
+        # Frame para botones
+        btn_frame = tk.Frame(main_frame)
+        btn_frame.pack(pady=(10, 0))
+        
+        # Botones con mejor estilo
+        btn_aceptar = ttk.Button(btn_frame, text="Aceptar", command=self.on_accept)
+        btn_aceptar.pack(side=tk.LEFT, padx=5)
+        
+        btn_cancelar = ttk.Button(btn_frame, text="Cancelar", command=self.on_cancel)
+        btn_cancelar.pack(side=tk.LEFT, padx=5)
+        
+        # Configurar autocompletado
+        self.combo.bind('<KeyRelease>', self.autocomplete)
+        self.bind('<Return>', lambda e: self.on_accept())
+        self.bind('<Escape>', lambda e: self.on_cancel())
+    
+    def autocomplete(self, event):
+        value = event.widget.get()
+        if value == '':
+            self.combo['values'] = list(self.tokens_disponibles)
+        else:
+            data = []
+            for item in self.tokens_disponibles:
+                if value.lower() in item.lower():
+                    data.append(item)
+            self.combo['values'] = data
+    
+    def on_accept(self):
+        self.result = self.combo.get()
+        self.destroy()
+    
+    def on_cancel(self):
+        self.destroy()
 
 class Tokenizador:
     def __init__(self):
@@ -145,11 +216,14 @@ class Tokenizador:
     def mostrar_popup_palabra_desconocida(self, palabra, root=None):
         """Muestra un popup para confirmar si una palabra desconocida está bien escrita"""
         # Crear una ventana temporal si no se proporciona una
+        temp_root = None
         if root is None:
             temp_root = tk.Tk()
             temp_root.withdraw()  # Ocultar ventana principal
-        else:
-            temp_root = root
+            root = temp_root
+        
+        # Hacer que la ventana temporal sea transitoria y capturar el foco
+        root.attributes('-topmost', True)
         
         # Obtener sugerencias
         sugerencias = self.sugerir_palabras_similares(palabra)
@@ -161,31 +235,36 @@ class Tokenizador:
             mensaje = f"La palabra '{palabra}' no existe en la base de datos.\n\n¿Está bien escrita?"
         
         # Mostrar diálogo de confirmación
-        respuesta = messagebox.askyesno("Palabra desconocida", mensaje)
+        respuesta = messagebox.askyesno("Palabra desconocida", mensaje, parent=root)
         
         if respuesta:  # Si la palabra está bien escrita
-            # Pedir token
+            # Obtener tokens disponibles
             tokens_disponibles = set(token for token, _ in self.palabras.values())
-            tokens_str = ", ".join(tokens_disponibles)
             
-            token = simpledialog.askstring("Asignar token", 
-                                          f"¿A qué token pertenece '{palabra}'?\n\nTokens existentes: {tokens_str}\n(Puede escribir uno nuevo)")
+            # Crear y mostrar nuestro diálogo personalizado
+            dialog = TokenDialog(root, "Asignar token", 
+                            f"¿A qué token pertenece '{palabra}'?\nSeleccione uno existente o escriba uno nuevo:",
+                            tokens_disponibles)
+            root.wait_window(dialog)
+            
+            token = dialog.result
             
             if token:
                 # Pedir puntuación
                 puntuacion = simpledialog.askinteger("Asignar puntuación", 
-                                                    f"¿Qué puntuación de sentimiento tiene '{palabra}'?\n(Número positivo o negativo)")
+                                                f"¿Qué puntuación de sentimiento tiene '{palabra}'?\n(Número positivo o negativo)",
+                                                parent=root)
                 
                 if puntuacion is not None:
                     # Agregar palabra a la base de datos
                     self.agregar_palabra(palabra, token, puntuacion)
                     
-                    if root is None:
+                    if temp_root is not None:
                         temp_root.destroy()
                     return True
         
         # Si se canceló o no está bien escrita
-        if root is None:
+        if temp_root is not None:
             temp_root.destroy()
         return False
     
@@ -197,6 +276,7 @@ class Tokenizador:
         # Crear ventana temporal para los popups
         root = tk.Tk()
         root.withdraw()  # Ocultar ventana principal
+        root.attributes('-topmost', True)  # Asegurar que esté encima
         
         tokens = []
         for palabra in palabras:
