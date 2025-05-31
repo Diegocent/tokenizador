@@ -3,6 +3,10 @@ from tkinter import scrolledtext, messagebox, filedialog
 from tokenizador import Tokenizador
 
 class InterfazTokenizador:
+    """
+    PARTE DEL TP: Interfaz gráfica opcional para facilitar la interacción con el sistema
+    Proporciona una interfaz amigable para cargar conversaciones y ver resultados
+    """
     def __init__(self, root):
         self.root = root
         self.root.title("Tokenizador para Contact Centers")
@@ -10,7 +14,8 @@ class InterfazTokenizador:
         # Centrar la ventana principal
         self.centrar_ventana(900, 700)
         
-        # Inicializar tokenizador
+        # PARTE DEL TP: Inicialización del sistema principal
+        # Crear instancia del tokenizador que implementa toda la funcionalidad del TP
         self.tokenizador = Tokenizador()
         
         # Crear interfaz
@@ -26,8 +31,11 @@ class InterfazTokenizador:
         
         self.root.geometry(f'{ancho}x{alto}+{x}+{y}')
     
-    # [El resto de los métodos permanecen EXACTAMENTE igual que en tu versión original]
     def crear_interfaz(self):
+        """
+        PARTE DEL TP: Interfaz para entrada de datos
+        Crea la interfaz gráfica para cargar conversaciones (simula la entrada de audio a texto)
+        """
         # Frame principal
         main_frame = tk.Frame(self.root, padx=10, pady=10)
         main_frame.pack(fill=tk.BOTH, expand=True)
@@ -37,7 +45,8 @@ class InterfazTokenizador:
                          font=("Arial", 14, "bold"))
         titulo.pack(pady=10)
         
-        # Frame para entrada de texto
+        # PARTE DEL TP: 1.1 Entrada de datos (simula conversión audio a texto)
+        # Frame para entrada de texto que simula las transcripciones
         input_frame = tk.LabelFrame(main_frame, text="Conversación", padx=5, pady=5)
         input_frame.pack(fill=tk.BOTH, expand=True, pady=5)
         
@@ -49,19 +58,22 @@ class InterfazTokenizador:
         btn_frame = tk.Frame(main_frame)
         btn_frame.pack(fill=tk.X, pady=5)
         
+        # PARTE DEL TP: Funcionalidades de carga de datos
         btn_cargar = tk.Button(btn_frame, text="Cargar conversación", command=self.cargar_conversacion)
         btn_cargar.pack(side=tk.LEFT, padx=5)
         
         btn_ejemplo = tk.Button(btn_frame, text="Cargar ejemplo", command=self.cargar_ejemplo)
         btn_ejemplo.pack(side=tk.LEFT, padx=5)
         
+        # PARTE DEL TP: Botón principal que ejecuta todo el procesamiento
         btn_procesar = tk.Button(btn_frame, text="Procesar conversación", command=self.procesar_conversacion)
         btn_procesar.pack(side=tk.LEFT, padx=5)
         
         btn_limpiar = tk.Button(btn_frame, text="Limpiar", command=self.limpiar)
         btn_limpiar.pack(side=tk.LEFT, padx=5)
         
-        # Frame para resultados
+        # PARTE DEL TP: 3. Resultados y Reporte
+        # Frame para mostrar los resultados del análisis
         result_frame = tk.LabelFrame(main_frame, text="Resultados", padx=5, pady=5)
         result_frame.pack(fill=tk.BOTH, expand=True, pady=5)
         
@@ -70,7 +82,10 @@ class InterfazTokenizador:
         self.texto_resultados.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
     
     def cargar_conversacion(self):
-        """Carga una conversación desde un archivo de texto"""
+        """
+        PARTE DEL TP: 1.1 Entrada de datos
+        Permite cargar conversaciones desde archivos (simula la conversión de audio a texto)
+        """
         archivo = filedialog.askopenfilename(
             title="Seleccionar archivo de conversación",
             filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")]
@@ -87,7 +102,10 @@ class InterfazTokenizador:
                 messagebox.showerror("Error", f"No se pudo cargar el archivo: {str(e)}")
     
     def cargar_ejemplo(self):
-        """Carga una conversación de ejemplo"""
+        """
+        PARTE DEL TP: Ejemplo de conversación para demostrar funcionalidad
+        Carga una conversación de ejemplo que demuestra todos los aspectos del TP
+        """
         ejemplo = """Agente: Hola, bienvenido al servicio de Atención al Cliente. ¿Con quién tengo el gusto de hablar?
 Cliente: Buenas, mi nombre es Juan Arias, quiero hacer una consulta acerca de mi factura.
 Agente: Claro Juan, cuénteme en qué puedo ayudarle con su factura.
@@ -100,7 +118,10 @@ Agente: No se preocupe, ya estoy gestionando la eliminación del cargo. En unos 
         self.texto_conversacion.insert(tk.END, ejemplo)
     
     def procesar_conversacion(self):
-        """Procesa la conversación y muestra los resultados"""
+        """
+        PARTE DEL TP: Función principal que ejecuta todo el procesamiento
+        Integra todas las partes del TP: tokenización, análisis de sentimiento y verificación de protocolo
+        """
         conversacion = self.texto_conversacion.get(1.0, tk.END)
         
         if not conversacion.strip():
@@ -108,13 +129,17 @@ Agente: No se preocupe, ya estoy gestionando la eliminación del cargo. En unos 
             return
         
         try:
-            # Procesar la conversación
+            # PARTE DEL TP: Ejecutar procesamiento completo
+            # 1. Tokenización de la conversación
+            # 2. Análisis de sentimiento
+            # 3. Verificación del protocolo de atención
             resultados = self.tokenizador.procesar_conversacion(conversacion)
             
-            # Generar reporte
+            # PARTE DEL TP: 3. Resultados y Reporte
+            # Generar reporte final con todos los análisis
             reporte = self.tokenizador.generar_reporte(resultados)
             
-            # Mostrar resultados
+            # Mostrar resultados en la interfaz
             self.texto_resultados.delete(1.0, tk.END)
             self.texto_resultados.insert(tk.END, reporte)
             

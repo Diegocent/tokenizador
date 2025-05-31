@@ -8,6 +8,10 @@ from collections import defaultdict
 from tkinter import ttk
 
 class TokenDialog(tk.Toplevel):
+    """
+    PARTE DEL TP: 1.2 Tokenización - Detección de lexemas
+    Diálogo personalizado para manejar palabras desconocidas y asignar tokens
+    """
     def __init__(self, parent, title, prompt, tokens_disponibles):
         super().__init__(parent)
         self.title(title)
@@ -60,6 +64,7 @@ class TokenDialog(tk.Toplevel):
         self.bind('<Escape>', lambda e: self.on_cancel())
     
     def autocomplete(self, event):
+        """Implementa autocompletado para facilitar la selección de tokens"""
         value = event.widget.get()
         if value == '':
             self.combo['values'] = list(self.tokens_disponibles)
@@ -78,14 +83,19 @@ class TokenDialog(tk.Toplevel):
         self.destroy()
 
 class Tokenizador:
+    """
+    CLASE PRINCIPAL QUE IMPLEMENTA EL SISTEMA COMPLETO DEL TRABAJO PRÁCTICO
+    """
     def __init__(self):
-        # Inicializar la base de datos
+        # PARTE DEL TP: 1.2 Tokenización - Base de datos (tabla de símbolos)
+        # Inicializar la base de datos para almacenar lexemas y tokens
         self.inicializar_bd()
         
         # Cargar palabras desde la base de datos
         self.cargar_palabras()
         
-        # Definir categorías de tokens para el protocolo
+        # PARTE DEL TP: 2.2 Verificación del Protocolo de Atención
+        # Definir categorías de tokens para el protocolo de atención al cliente
         self.categorias_protocolo = {
             'saludo': ['hola', 'buenos días', 'buenas tardes', 'buenas noches', 'bienvenido'],
             'identificacion': ['nombre', 'con quién', 'con quien', 'identificarse', 'quién es', 'quien es'],
@@ -94,12 +104,15 @@ class Tokenizador:
         }
 
     def inicializar_bd(self):
-        """Inicializa la base de datos si no existe"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Base de datos (tabla de símbolos)
+        Crea la base de datos SQLite con palabras iniciales y sus puntuaciones
+        """
         if not os.path.exists('tokenizador.db'):
             conn = sqlite3.connect('tokenizador.db')
             cursor = conn.cursor()
             
-            # Crear tabla de palabras
+            # Crear tabla de palabras con lexema, token y puntuación
             cursor.execute('''
             CREATE TABLE palabras (
                 id INTEGER PRIMARY KEY,
@@ -109,7 +122,8 @@ class Tokenizador:
             )
             ''')
             
-            # Insertar algunas palabras iniciales con sus puntuaciones
+            # PARTE DEL TP: 2.1 Análisis de Sentimiento - Tabla de símbolos con ponderación
+            # Insertar palabras iniciales con sus puntuaciones para análisis de sentimiento
             palabras_iniciales = [
                 ('bueno', 'positivo', 1),
                 ('amable', 'positivo', 2),
@@ -133,7 +147,10 @@ class Tokenizador:
             print("Base de datos inicializada con palabras de ejemplo.")
     
     def cargar_palabras(self):
-        """Carga las palabras desde la base de datos"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Carga de tabla de símbolos
+        Carga todas las palabras de la base de datos en memoria
+        """
         self.palabras = {}
         conn = sqlite3.connect('tokenizador.db')
         cursor = conn.cursor()
@@ -144,7 +161,10 @@ class Tokenizador:
         print(f"Se cargaron {len(self.palabras)} palabras de la base de datos.")
     
     def agregar_palabra(self, lexema, token, puntuacion):
-        """Agrega una nueva palabra a la base de datos"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Expansión dinámica de la tabla de símbolos
+        Permite agregar nuevas palabras a la base de datos durante la ejecución
+        """
         conn = sqlite3.connect('tokenizador.db')
         cursor = conn.cursor()
         try:
@@ -161,7 +181,10 @@ class Tokenizador:
             conn.close()
     
     def distancia_levenshtein(self, s1, s2):
-        """Calcula la distancia de Levenshtein entre dos cadenas"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Sugerencia de lexemas usando distancia de Levenshtein
+        Implementa el algoritmo de distancia mínima de edición para sugerir palabras similares
+        """
         if len(s1) < len(s2):
             return self.distancia_levenshtein(s2, s1)
         
@@ -181,8 +204,11 @@ class Tokenizador:
         return previous_row[-1]
     
     def distancia_hamming(self, s1, s2):
-        """Calcula la distancia de Hamming entre dos cadenas"""
-        # Igualar longitudes añadiendo espacios
+        """
+        PARTE DEL TP: 1.2 Tokenización - Sugerencia de lexemas usando distancia de Hamming
+        Implementa la distancia de Hamming para palabras de igual longitud
+        """
+        # Igualar longitudes añadiendo espacios (como especifica el TP)
         if len(s1) < len(s2):
             s1 = s1 + ' ' * (len(s2) - len(s1))
         elif len(s2) < len(s1):
@@ -192,11 +218,14 @@ class Tokenizador:
         return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2))
     
     def sugerir_palabras_similares(self, palabra):
-        """Sugiere palabras similares basadas en distancias de Levenshtein y Hamming"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Sistema de sugerencias para palabras no válidas
+        Combina ambas distancias para sugerir palabras similares cuando se encuentra un lexema no válido
+        """
         sugerencias = []
         
         for lexema in self.palabras.keys():
-            # Calcular distancias
+            # Calcular ambas distancias como especifica el TP
             dist_lev = self.distancia_levenshtein(palabra.lower(), lexema.lower())
             dist_ham = self.distancia_hamming(palabra.lower(), lexema.lower())
             
@@ -214,7 +243,11 @@ class Tokenizador:
         return [s[0] for s in sugerencias[:5]]
     
     def mostrar_popup_palabra_desconocida(self, palabra, root=None):
-        """Muestra un popup para confirmar si una palabra desconocida está bien escrita"""
+        """
+        PARTE DEL TP: 1.2 Tokenización - Manejo interactivo de palabras desconocidas
+        Implementa el flujo especificado: mostrar palabra candidata, preguntar si es válida,
+        asignar token y puntuación, o sugerir alternativas
+        """
         # Crear una ventana temporal si no se proporciona una
         temp_root = None
         if root is None:
@@ -225,10 +258,10 @@ class Tokenizador:
         # Hacer que la ventana temporal sea transitoria y capturar el foco
         root.attributes('-topmost', True)
         
-        # Obtener sugerencias
+        # Obtener sugerencias usando las distancias implementadas
         sugerencias = self.sugerir_palabras_similares(palabra)
         
-        # Crear mensaje
+        # Crear mensaje con sugerencias
         if sugerencias:
             mensaje = f"La palabra '{palabra}' no existe en la base de datos.\n\n¿Está bien escrita?\n\nSugerencias similares:\n" + "\n".join(sugerencias)
         else:
@@ -241,7 +274,7 @@ class Tokenizador:
             # Obtener tokens disponibles
             tokens_disponibles = set(token for token, _ in self.palabras.values())
             
-            # Crear y mostrar nuestro diálogo personalizado
+            # Crear y mostrar nuestro diálogo personalizado para asignar token
             dialog = TokenDialog(root, "Asignar token", 
                             f"¿A qué token pertenece '{palabra}'?\nSeleccione uno existente o escriba uno nuevo:",
                             tokens_disponibles)
@@ -250,7 +283,7 @@ class Tokenizador:
             token = dialog.result
             
             if token:
-                # Pedir puntuación
+                # Pedir puntuación para análisis de sentimiento
                 puntuacion = simpledialog.askinteger("Asignar puntuación", 
                                                 f"¿Qué puntuación de sentimiento tiene '{palabra}'?\n(Número positivo o negativo)",
                                                 parent=root)
@@ -269,8 +302,11 @@ class Tokenizador:
         return False
     
     def tokenizar(self, texto):
-        """Tokeniza un texto en palabras y verifica cada una"""
-        # Dividir el texto en palabras
+        """
+        PARTE DEL TP: 1.2 Tokenización - Segmentación en palabras/lexemas
+        Implementa el tokenizador principal que divide el texto en palabras y las cataloga
+        """
+        # Dividir el texto en palabras usando expresiones regulares
         palabras = re.findall(r'\b\w+\b', texto.lower())
         
         # Crear ventana temporal para los popups
@@ -281,11 +317,11 @@ class Tokenizador:
         tokens = []
         for palabra in palabras:
             if palabra.lower() in self.palabras:
-                # Si la palabra existe, obtener su token y puntuación
+                # Si la palabra existe en la tabla de símbolos, obtener su token y puntuación
                 token, puntuacion = self.palabras[palabra.lower()]
                 tokens.append((palabra, token, puntuacion))
             else:
-                # Si no existe, mostrar popup
+                # Si no existe, aplicar el flujo de manejo de palabras desconocidas
                 if self.mostrar_popup_palabra_desconocida(palabra, root):
                     # Si se agregó correctamente, obtener su token y puntuación
                     token, puntuacion = self.palabras[palabra.lower()]
@@ -298,12 +334,18 @@ class Tokenizador:
         return tokens
     
     def analizar_sentimiento(self, tokens):
-        """Analiza el sentimiento de una lista de tokens"""
+        """
+        PARTE DEL TP: 2.1 Análisis de Sentimiento
+        Implementa el cálculo de sentimiento basado en la ponderación de palabras
+        """
+        # Calcular puntuación total sumando/restando ponderaciones
         puntuacion_total = sum(puntuacion for _, _, puntuacion in tokens)
+        
+        # Separar palabras positivas y negativas
         palabras_positivas = [(palabra, puntuacion) for palabra, _, puntuacion in tokens if puntuacion > 0]
         palabras_negativas = [(palabra, puntuacion) for palabra, _, puntuacion in tokens if puntuacion < 0]
         
-        # Determinar sentimiento general
+        # Determinar sentimiento general según especificación del TP
         if puntuacion_total > 0:
             sentimiento = "Positivo"
         elif puntuacion_total < 0:
@@ -325,39 +367,45 @@ class Tokenizador:
         }
     
     def verificar_protocolo(self, tokens, es_agente=True):
-        """Verifica si se sigue el protocolo de atención"""
+        """
+        PARTE DEL TP: 2.2 Verificación del Protocolo de Atención
+        Implementa la verificación de las 4 fases del protocolo especificadas en el TP
+        """
         if not es_agente:
             return None  # No verificar protocolo para el cliente
         
-        # Convertir tokens a texto para búsqueda
+        # Convertir tokens a texto para búsqueda de patrones
         texto = " ".join(palabra for palabra, _, _ in tokens).lower()
         
-        # Verificar cada fase del protocolo
+        # Verificar cada fase del protocolo como especifica el TP
         resultados = {}
         
-        # Fase de saludo
+        # FASE 1: Fase de saludo - Detectar bienvenida
         tiene_saludo = any(saludo in texto for saludo in self.categorias_protocolo['saludo'])
         resultados['Fase de saludo'] = "OK" if tiene_saludo else "Faltante"
         
-        # Identificación del cliente
+        # FASE 2: Identificación del cliente - Verificar si pide identificación
         tiene_identificacion = any(ident in texto for ident in self.categorias_protocolo['identificacion'])
         resultados['Identificación del cliente'] = "OK" if tiene_identificacion else "Faltante"
         
-        # Palabras prohibidas
+        # FASE 3: No usar palabras rudas o prohibidas - Detectar palabras no permitidas
         palabras_prohibidas_usadas = [palabra for palabra in self.categorias_protocolo['palabras_prohibidas'] if palabra in texto]
         if palabras_prohibidas_usadas:
             resultados['Uso de palabras rudas'] = f"Detectadas: {', '.join(palabras_prohibidas_usadas)}"
         else:
             resultados['Uso de palabras rudas'] = "Ninguna detectada"
         
-        # Despedida amable
+        # FASE 4: Despedida amable - Comprobar cierre cortés
         tiene_despedida = any(despedida in texto for despedida in self.categorias_protocolo['despedida'])
         resultados['Despedida amable'] = "OK" if tiene_despedida else "Faltante"
         
         return resultados
     
     def procesar_conversacion(self, conversacion):
-        """Procesa una conversación completa"""
+        """
+        PARTE DEL TP: 2.3 Implementación con Tokenización
+        Procesa una conversación completa separando turnos de agente y cliente
+        """
         # Dividir la conversación en turnos de agente y cliente
         turnos = re.split(r'(Agente:|Cliente:)', conversacion)
         turnos = [t.strip() for t in turnos if t.strip()]
@@ -384,21 +432,24 @@ class Tokenizador:
             else:
                 i += 1
         
-        # Analizar sentimiento general (combinando agente y cliente)
+        # PARTE DEL TP: 2.1 Análisis de Sentimiento - Análisis general (combinando agente y cliente)
         if resultados["tokens_totales"]:
             resultados["sentimiento_general"] = self.analizar_sentimiento(resultados["tokens_totales"])
         
-        # Verificar protocolo (solo con los tokens del agente)
+        # PARTE DEL TP: 2.2 Verificación del Protocolo - Solo con los tokens del agente
         if resultados["tokens_agente"]:
             resultados["protocolo"] = self.verificar_protocolo(resultados["tokens_agente"], es_agente=True)
         
         return resultados
     
     def generar_reporte(self, resultados):
-        """Genera un reporte basado en los resultados del procesamiento"""
+        """
+        PARTE DEL TP: 3. Resultados y Reporte
+        Genera el reporte final con sentimiento y verificación de protocolo
+        """
         reporte = "=== REPORTE DE ANÁLISIS DE CONVERSACIÓN ===\n\n"
         
-        # Reporte de sentimiento general (combinado)
+        # PARTE DEL TP: 3.1 Detección de Sentimiento - Reporte de sentimiento
         if "sentimiento_general" in resultados:
             s = resultados["sentimiento_general"]
             reporte += "SENTIMIENTO GENERAL DE LA CONVERSACIÓN:\n"
@@ -411,7 +462,7 @@ class Tokenizador:
                 reporte += f"Palabra más negativa: {s['palabra_mas_negativa'][0]}, {s['palabra_mas_negativa'][1]}\n"
             reporte += "\n"
         
-        # Reporte de protocolo (solo para el agente)
+        # PARTE DEL TP: 3.2 Verificación del Protocolo de Atención - Reporte de protocolo
         if resultados.get("protocolo"):
             reporte += "VERIFICACIÓN DEL PROTOCOLO DE ATENCIÓN (AGENTE):\n"
             for fase, estado in resultados["protocolo"].items():
@@ -423,7 +474,7 @@ class Tokenizador:
 if __name__ == "__main__":
     tokenizador = Tokenizador()
     
-    # Ejemplo de conversación
+    # Ejemplo de conversación para demostrar funcionalidad
     conversacion = """
     Agente: Hola, bienvenido al servicio de Atención al Cliente. ¿Con quién tengo el gusto de hablar?
     Cliente: Buenas, mi nombre es Juan Arias, quiero hacer una consulta acerca de mi factura.
