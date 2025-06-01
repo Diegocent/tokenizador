@@ -116,7 +116,7 @@ Agente: No se preocupe, ya estoy gestionando la eliminación del cargo. En unos 
         
         self.texto_conversacion.delete(1.0, tk.END)
         self.texto_conversacion.insert(tk.END, ejemplo)
-    
+
     def procesar_conversacion(self):
         """
         PARTE DEL TP: Función principal que ejecuta todo el procesamiento
@@ -143,7 +143,16 @@ Agente: No se preocupe, ya estoy gestionando la eliminación del cargo. En unos 
             self.texto_resultados.delete(1.0, tk.END)
             self.texto_resultados.insert(tk.END, reporte)
             
-            messagebox.showinfo("Éxito", "Conversación procesada correctamente")
+            # Mostrar mensaje de éxito con información de correcciones
+            if "correcciones_totales" in resultados and resultados["correcciones_totales"]:
+                num_correcciones = len(resultados["correcciones_totales"])
+                messagebox.showinfo("Procesamiento completado", 
+                                  f"Conversación procesada correctamente.\n"
+                                  f"Se realizaron {num_correcciones} corrección(es).\n"
+                                  f"Consulte el reporte para ver los detalles.")
+            else:
+                messagebox.showinfo("Éxito", "Conversación procesada correctamente")
+                
         except Exception as e:
             messagebox.showerror("Error", f"Error al procesar la conversación: {str(e)}")
     

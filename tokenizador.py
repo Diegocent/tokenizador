@@ -82,6 +82,108 @@ class TokenDialog(tk.Toplevel):
     def on_cancel(self):
         self.destroy()
 
+class SugerenciasDialog(tk.Toplevel):
+    """
+    PARTE DEL TP: 1.2 Tokenización - Diálogo para seleccionar sugerencias de palabras similares
+    Permite seleccionar una palabra del dropdown de sugerencias o mantener la original
+    """
+    def __init__(self, parent, palabra_original, sugerencias):
+        super().__init__(parent)
+        self.title("Palabra desconocida - Seleccionar corrección")
+        self.attributes('-topmost', True)
+        self.resizable(False, False)
+        
+        # Configuración para centrar la ventana
+        window_width = 500
+        window_height = 280
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+        
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        
+        self.result = None
+        self.palabra_original = palabra_original
+        self.sugerencias = sugerencias
+        
+        # Frame principal
+        main_frame = tk.Frame(self, padx=20, pady=20)
+        main_frame.pack(expand=True, fill=tk.BOTH)
+        
+        # Título y explicación
+        titulo = tk.Label(main_frame, 
+                         text=f"La palabra '{palabra_original}' no existe en la base de datos",
+                         font=("Arial", 12, "bold"),
+                         fg="red")
+        titulo.pack(pady=(0, 10))
+        
+        explicacion = tk.Label(main_frame,
+                              text="Seleccione una opción del menú desplegable:",
+                              wraplength=450)
+        explicacion.pack(pady=(0, 15))
+        
+        # Frame para el combobox
+        combo_frame = tk.LabelFrame(main_frame, text="Opciones disponibles", padx=10, pady=10)
+        combo_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        # Preparar opciones para el combobox
+        opciones = [f"Mantener '{palabra_original}' (agregar como nueva palabra)"]
+        
+        if sugerencias:
+            for sugerencia in sugerencias:
+                opciones.append(f"Reemplazar por '{sugerencia}'")
+        else:
+            opciones.append("(No hay sugerencias disponibles)")
+        
+        # Combobox con las opciones
+        self.combo = ttk.Combobox(combo_frame, state="readonly", width=60)
+        self.combo.pack(fill=tk.X, pady=5)
+        self.combo['values'] = opciones
+        self.combo.set(opciones[0])  # Seleccionar la primera opción por defecto
+        self.combo.focus_set()
+        
+        # Frame para botones
+        btn_frame = tk.Frame(main_frame)
+        btn_frame.pack(pady=(10, 0))
+        
+        # Botones
+        btn_aceptar = ttk.Button(btn_frame, text="Aceptar", command=self.on_accept)
+        btn_aceptar.pack(side=tk.LEFT, padx=5)
+        
+        btn_cancelar = ttk.Button(btn_frame, text="Cancelar", command=self.on_cancel)
+        btn_cancelar.pack(side=tk.LEFT, padx=5)
+        
+        # Configurar teclas
+        self.bind('<Return>', lambda e: self.on_accept())
+        self.bind('<Escape>', lambda e: self.on_cancel())
+    
+    def on_accept(self):
+        seleccion = self.combo.get()
+        
+        if seleccion.startswith("Mantener"):
+            # Si se seleccionó mantener la palabra original
+            self.result = self.palabra_original
+        elif seleccion.startswith("Reemplazar por"):
+            # Extraer la palabra de la opción seleccionada
+            # Formato: "Reemplazar por 'palabra'"
+            import re
+            match = re.search(r"'([^']+)'", seleccion)
+            if match:
+                self.result = match.group(1)
+            else:
+                self.result = self.palabra_original
+        else:
+            # Caso por defecto
+            self.result = self.palabra_original
+            
+        self.destroy()
+    
+    def on_cancel(self):
+        self.result = None
+        self.destroy()
+
 class Tokenizador:
     """
     CLASE PRINCIPAL QUE IMPLEMENTA EL SISTEMA COMPLETO DEL TRABAJO PRÁCTICO
@@ -136,7 +238,13 @@ class Tokenizador:
                 ('gracias', 'despedida', 1),
                 ('nombre', 'identificacion', 0),
                 ('inútil', 'prohibida', -3),
-                ('tonto', 'prohibida', -3)
+                ('tonto', 'prohibida', -3),
+                ('al', 'articulo', 0),
+                ('el', 'articulo', 0),
+                ('la', 'articulo', 0),
+                ('de', 'preposicion', 0),
+                ('en', 'preposicion', 0),
+                ('con', 'preposicion', 0)
             ]
             
             cursor.executemany('INSERT INTO palabras (lexema, token, puntuacion) VALUES (?, ?, ?)', 
@@ -242,11 +350,40 @@ class Tokenizador:
         # Devolver hasta 5 sugerencias
         return [s[0] for s in sugerencias[:5]]
     
+    def procesar_palabra_con_sugerencia(self, palabra_seleccionada, root):
+        """
+        PARTE DEL TP: Procesar palabra seleccionada (original o sugerencia) 
+        y asignar token y puntuación
+        """
+        # Obtener tokens disponibles
+        tokens_disponibles = set(token for token, _ in self.palabras.values())
+        
+        # Crear y mostrar diálogo para asignar token
+        token_dialog = TokenDialog(root, "Asignar token", 
+                        f"¿A qué token pertenece '{palabra_seleccionada}'?\nSeleccione uno existente o escriba uno nuevo:",
+                        tokens_disponibles)
+        root.wait_window(token_dialog)
+        
+        token = token_dialog.result
+        
+        if token:
+            # Pedir puntuación para análisis de sentimiento
+            puntuacion = simpledialog.askinteger("Asignar puntuación", 
+                                        f"¿Qué puntuación de sentimiento tiene '{palabra_seleccionada}'?\n(Número positivo o negativo)",
+                                        parent=root)
+            
+            if puntuacion is not None:
+                # Agregar palabra a la base de datos
+                self.agregar_palabra(palabra_seleccionada, token, puntuacion)
+                return True
+        
+        return False
+
     def mostrar_popup_palabra_desconocida(self, palabra, root=None):
         """
         PARTE DEL TP: 1.2 Tokenización - Manejo interactivo de palabras desconocidas
-        Implementa el flujo especificado: mostrar palabra candidata, preguntar si es válida,
-        asignar token y puntuación, o sugerir alternativas
+        Implementa el flujo mejorado: mostrar sugerencias en lista seleccionable,
+        permitir reemplazo y registro de correcciones
         """
         # Crear una ventana temporal si no se proporciona una
         temp_root = None
@@ -254,67 +391,66 @@ class Tokenizador:
             temp_root = tk.Tk()
             temp_root.withdraw()  # Ocultar ventana principal
             root = temp_root
-        
+    
         # Hacer que la ventana temporal sea transitoria y capturar el foco
         root.attributes('-topmost', True)
-        
+    
         # Obtener sugerencias usando las distancias implementadas
         sugerencias = self.sugerir_palabras_similares(palabra)
+    
+        # Crear y mostrar el diálogo de sugerencias
+        dialog = SugerenciasDialog(root, palabra, sugerencias)
+        root.wait_window(dialog)
+    
+        palabra_seleccionada = dialog.result
+    
+        if palabra_seleccionada is None:
+            # Si se canceló
+            if temp_root is not None:
+                temp_root.destroy()
+            return None, False, None  # palabra_final, procesada, correccion_info
+    
+        # Determinar si es corrección o palabra nueva
+        es_correccion = palabra_seleccionada != palabra
+        correccion_info = None
         
-        # Crear mensaje con sugerencias
-        if sugerencias:
-            mensaje = f"La palabra '{palabra}' no existe en la base de datos.\n\n¿Está bien escrita?\n\nSugerencias similares:\n" + "\n".join(sugerencias)
+        if es_correccion:
+            # Es una corrección - la palabra seleccionada ya existe en la BD
+            correccion_info = {
+                'palabra_original': palabra,
+                'palabra_corregida': palabra_seleccionada,
+                'token': self.palabras[palabra_seleccionada.lower()][0],
+                'puntuacion': self.palabras[palabra_seleccionada.lower()][1]
+            }
+            
+            if temp_root is not None:
+                temp_root.destroy()
+            return palabra_seleccionada, True, correccion_info
         else:
-            mensaje = f"La palabra '{palabra}' no existe en la base de datos.\n\n¿Está bien escrita?"
-        
-        # Mostrar diálogo de confirmación
-        respuesta = messagebox.askyesno("Palabra desconocida", mensaje, parent=root)
-        
-        if respuesta:  # Si la palabra está bien escrita
-            # Obtener tokens disponibles
-            tokens_disponibles = set(token for token, _ in self.palabras.values())
+            # Es palabra nueva - necesita asignar token y puntuación
+            procesada = self.procesar_palabra_con_sugerencia(palabra_seleccionada, root)
             
-            # Crear y mostrar nuestro diálogo personalizado para asignar token
-            dialog = TokenDialog(root, "Asignar token", 
-                            f"¿A qué token pertenece '{palabra}'?\nSeleccione uno existente o escriba uno nuevo:",
-                            tokens_disponibles)
-            root.wait_window(dialog)
-            
-            token = dialog.result
-            
-            if token:
-                # Pedir puntuación para análisis de sentimiento
-                puntuacion = simpledialog.askinteger("Asignar puntuación", 
-                                                f"¿Qué puntuación de sentimiento tiene '{palabra}'?\n(Número positivo o negativo)",
-                                                parent=root)
-                
-                if puntuacion is not None:
-                    # Agregar palabra a la base de datos
-                    self.agregar_palabra(palabra, token, puntuacion)
-                    
-                    if temp_root is not None:
-                        temp_root.destroy()
-                    return True
-        
-        # Si se canceló o no está bien escrita
-        if temp_root is not None:
-            temp_root.destroy()
-        return False
+            if temp_root is not None:
+                temp_root.destroy()
+            return palabra_seleccionada, procesada, None
     
     def tokenizar(self, texto):
         """
         PARTE DEL TP: 1.2 Tokenización - Segmentación en palabras/lexemas
         Implementa el tokenizador principal que divide el texto en palabras y las cataloga
+        Ahora incluye manejo de correcciones sin modificar el texto original
         """
         # Dividir el texto en palabras usando expresiones regulares
         palabras = re.findall(r'\b\w+\b', texto.lower())
-        
+
         # Crear ventana temporal para los popups
         root = tk.Tk()
         root.withdraw()  # Ocultar ventana principal
         root.attributes('-topmost', True)  # Asegurar que esté encima
-        
+
         tokens = []
+        correcciones_realizadas = []  # Para llevar registro de las correcciones
+
         for palabra in palabras:
             if palabra.lower() in self.palabras:
                 # Si la palabra existe en la tabla de símbolos, obtener su token y puntuación
@@ -322,16 +458,24 @@ class Tokenizador:
                 tokens.append((palabra, token, puntuacion))
             else:
                 # Si no existe, aplicar el flujo de manejo de palabras desconocidas
-                if self.mostrar_popup_palabra_desconocida(palabra, root):
-                    # Si se agregó correctamente, obtener su token y puntuación
-                    token, puntuacion = self.palabras[palabra.lower()]
-                    tokens.append((palabra, token, puntuacion))
+                palabra_resultado, procesada, correccion_info = self.mostrar_popup_palabra_desconocida(palabra, root)
+            
+                if procesada and palabra_resultado:
+                    if correccion_info:
+                        # Se realizó una corrección
+                        correcciones_realizadas.append(correccion_info)
+                        print(f"CORRECCIÓN: '{palabra}' → '{palabra_resultado}'")
+                    
+                    # Obtener token y puntuación de la palabra (original o corregida)
+                    token, puntuacion = self.palabras[palabra_resultado.lower()]
+                    tokens.append((palabra_resultado, token, puntuacion))
                 else:
-                    # Si no se agregó, marcar como desconocida
+                    # Si no se procesó o se canceló, marcar como desconocida
                     tokens.append((palabra, "desconocido", 0))
-        
+
         root.destroy()
-        return tokens
+
+        return tokens, correcciones_realizadas  # Retornar también las correcciones
     
     def analizar_sentimiento(self, tokens):
         """
@@ -413,21 +557,24 @@ class Tokenizador:
         resultados = {
             "tokens_totales": [],  # Para el análisis de sentimiento general
             "tokens_agente": [],   # Solo para verificación de protocolo
-            "protocolo": None
+            "protocolo": None,
+            "correcciones_totales": []  # Para llevar registro de todas las correcciones
         }
         
         i = 0
         while i < len(turnos):
             if turnos[i] == "Agente:" and i + 1 < len(turnos):
                 # Procesar turno del agente
-                tokens = self.tokenizar(turnos[i + 1])
+                tokens, correcciones = self.tokenizar(turnos[i + 1])
                 resultados["tokens_totales"].extend(tokens)
                 resultados["tokens_agente"].extend(tokens)  # Guardamos aparte para protocolo
+                resultados["correcciones_totales"].extend(correcciones)
                 i += 2
             elif turnos[i] == "Cliente:" and i + 1 < len(turnos):
                 # Procesar turno del cliente
-                tokens = self.tokenizar(turnos[i + 1])
+                tokens, correcciones = self.tokenizar(turnos[i + 1])
                 resultados["tokens_totales"].extend(tokens)
+                resultados["correcciones_totales"].extend(correcciones)
                 i += 2
             else:
                 i += 1
@@ -467,6 +614,17 @@ class Tokenizador:
             reporte += "VERIFICACIÓN DEL PROTOCOLO DE ATENCIÓN (AGENTE):\n"
             for fase, estado in resultados["protocolo"].items():
                 reporte += f"{fase}: {estado}\n"
+            reporte += "\n"
+        
+        # PARTE DEL TP: Reporte de correcciones realizadas
+        if "correcciones_totales" in resultados and resultados["correcciones_totales"]:
+            reporte += "=== CORRECCIONES REALIZADAS ===\n"
+            for correccion in resultados["correcciones_totales"]:
+                reporte += f"Palabra mal escrita: '{correccion['palabra_original']}'\n"
+                reporte += f"Corrección seleccionada: '{correccion['palabra_corregida']}'\n"
+                reporte += f"Token asignado: {correccion['token']}\n"
+                reporte += f"Puntuación: {correccion['puntuacion']}\n"
+                reporte += "-" * 40 + "\n"
         
         return reporte
 
