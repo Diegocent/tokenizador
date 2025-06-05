@@ -1,0 +1,10 @@
+Agente: Gracias por llamar al servicio al cliente, yo soy Verónica, ¿cómo le puedo ayudar?
+Cliente: Necesito que desconectes mi cuenta y me digas qué está pasando. No sé qué está pasando.
+Agente: Claro, ¿me puede pasar su número de cuenta, por favor?
+Cliente: Tú ya tienes mi número, ya deberías saber mis datos. No voy a hacer esto ahorita, solo haz tu maldito trabajo. ¿Tu trabajo, me escuchaste bien?
+Agente: Ah, sí, sí lo escuché. Pero no sé a quién le estás hablando así, porque a mí no.
+Cliente: Perdóname, te estoy hablando a ti.
+Agente: A mí no me vas a hablar así. ¿No si quieres que te ayude? ¿Tu mamá te enseñó a hablarle así a las personas? ¿Te gusta que la gente vaya a tu trabajo y te hable así? ¿No, verdad? Entonces no me hables así.
+Cliente: Yo soy la cliente.
+Agente: No me importa, voy a terminar la llamada. Usted es más que bienvenida de volver a hablar hasta que se le pase lo enojado, porque usted no va a venir a mi trabajo a hablarme de esa manera. Usted puede decidir.
+Agente: Le voy a dar dos minutos. Nos vamos a quedar en silencio.

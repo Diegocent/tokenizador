@@ -1,0 +1,26 @@
+Agente: Buenas tardes, le habla Luis Gómez de Tigo, ¿en qué le puedo ayudar?
+Cliente: Buenas tardes, Mi reclamo es la intermitencia de señal. Y en un momento inconveniente… a ciertas horas… ustedes desconectan el Internet.
+Cliente: Y se me había dicho que iba a llegar la fibra a esta zona. No sé si es cierto, pero quisiera saberlo.
+Cliente: ¿Me podrían verificar si hay cobertura de fibra óptica?
+
+Agente: ¿Me indica su número de documento y su nombre completo, por favor?
+
+Cliente: Un millón trescientos cincuenta y seis mil setecientos treinta y cinco. Juan Carlos Herminio Trinidad.
+
+Agente: Perfecto. Un momento, voy a verificar en el sistema...
+Agente: Me queda cargando el sistema un momento. ¿Me puede indicar exactamente su dirección?
+
+Cliente: Rodríguez de Francia 155, casi Paso Medín. Compañía Nueva Esperanza, Barrio Arroyito.
+
+Agente: ¿Tiene alguna referencia cercana?
+
+Cliente: Sí, la fábrica Maceí, queda a una cuadra de mi casa.
+
+Agente: Vamos a continuar. Estamos teniendo una demora por la carga del sistema.
+Agente: Según la información, no me figura aún que se haya actualizado la zona con cobertura de fibra óptica.
+Agente: No podría darle una fecha estimada, ya que depende de los técnicos que deben actualizar en el sistema.
+Agente: Yo manejo solo la agenda de los instaladores, pero no puedo confirmar una fecha exacta.
+
+Cliente: Entiendo. Entonces esa era mi consulta. Muchísimas gracias.
+
+Agente: Gracias a usted, igualmente. Que tenga un buen día. Si desea, puede calificar esta atención. Hasta luego.

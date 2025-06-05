@@ -1,0 +1,39 @@
+Agente: ¿Aló?
+Cliente: Buenos días.
+Agente: ¿Usted es el titular de la línea?
+Cliente: Sí, sí, sí, soy yo mismo.
+Agente: ¿Me puede decir su nombre, por favor?
+Cliente: Gabriel.
+Agente: Mire, señor Gabriel, le llamo de Movicelgo para ofrecerle una promoción. Consiste en la instalación de una línea adicional en su casa, donde usted tendrá...
+Cliente: Perdón, señorita, pero exactamente ¿quién es usted?
+Agente: Mi nombre es Marcela Restrepo, de Movicelgo.
+Agente: Sí, sí, Marcela, discúlpeme, pero para nuestra seguridad me gustaría comprobar algunos datos antes de continuar con esta conversación. ¿Le importa?
+Agente: No, no tengo problema, señor.
+Cliente: ¿Desde qué teléfono me llama? Es que en la pantallita aquí del mío sale número privado.
+Agente: El interno mío es 104.
+Cliente: Ya... ¿Y para qué departamento de Movicelgo trabaja usted?
+Agente: Telemarketing activo.
+Cliente: ¿Perdón, me podría dar su identificación de trabajadora de Movicelgo?
+Agente: Señor, disculpe, pero creo que toda esa información no es necesaria...
+Cliente: Entonces, pues lamentablemente voy a tener que colgar porque no tengo la seguridad de hablar con una trabajadora de Movicelgo.
+Agente: Pero yo le puedo...
+Cliente: Yo llamo a Movicelgo y antes de poder comenzar cualquier trámite, estoy obligado a dar mis datos a la recepcionista, la secretaria, el auxiliar que me pone musiquita mientras piensa quién le chuta la pelota.
+Cliente: Y luego repetirle la historia al analista de ventas, al analista de quejas y reclamos, al analista de solicitudes nuevas, al de solicitudes viejas, al de solicitudes no atendidas, al de solicitudes ya atendidas y al analista nuevo que apenas está entrenando y no tiene idea de qué le estoy preguntando.
+Cliente: Así que si usted quiere hablar conmigo, tendrá que identificarse.
+Agente: Está bien, señor. Para que esté más tranquilo, le informo que mi número de empleada es el 3459-1212.
+Agente: No se retire, Marcela.
+Agente: Señor...
+Cliente: Un momento. Es que toda la gente se encuentra ocupada aquí en la casa.
+Agente: ¿Pero...? Hola, señor. ¿Señor?
+Agente: Marcela. Marcela, un momento por favor, que toda la gente se encuentra aquí ocupada.
+Agente: Bueno. Don Gabriel... Don Gabriel...
+Agente: ¿Aló? Sí, Marcela, gracias por la espera. Nuestros sistemas están un poco lentos hoy. ¿Cuál era el asunto de su llamada? ¿Perdón?
+Agente: Lo llamo de Movicelgo y estamos llamando para ofrecerle nuestra promoción: línea adicional en la que usted tiene derecho al uso de otra línea a muy bajo costo. ¿Usted estaría interesado, Gabriel?
+Agente: A ver, Marcela, gracias por llamar. Le voy a comunicar con mi mujer, que es la encargada de la sección de adquisición de productos técnicos en la casa. Por favor, no se retire de la línea.
+Cliente: Ay, disculpe por la espera. ¿Me puede decir su teléfono? Es que en mi pantallita solo aparece número privado.
+Cliente: Gracias. ¿Y con quién estoy hablando?
+Agente: Con Marcela. ¿Marcela qué? Perdón... Marcela Restrepo... ay no, perdón...
+Cliente: ¿Cuál es su identificación de trabajadora de Movicelgo?
+Agente: 3459-1212.
+Agente: Gracias por la información, Marcela. ¿Y en qué la puedo ayudar?
+Agente: Mire, la llamo de Movicelgo. Estamos llamando para ofrecerle nuestra promoción...

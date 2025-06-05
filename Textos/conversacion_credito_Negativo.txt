@@ -1,0 +1,15 @@
+Agente: Buenos días, ¿hablo con la señorita Carolina Mendoza?
+Cliente: Sí, con ella.
+Agente: Señorita Mendoza, le habla Elena Morales de Créditos Bancarios. Le llamo en relación a su tarjeta de crédito Gold que presenta un retraso de 20 días en su pago mínimo.
+Cliente: Sí, estoy consciente de ello.
+Agente: Nos gustaría saber el motivo del atraso para poder ofrecerle alguna alternativa de regularización.
+Cliente: He tenido algunos problemas financieros inesperados. Mi empresa retrasó el pago de nómina este mes.
+Agente: Entiendo. Debo informarle que este retraso está afectando su historial crediticio, y podría limitar su acceso a futuros créditos.
+Cliente: ¿De qué manera afecta exactamente?
+Agente: Su calificación ha pasado a "Deficiente", lo que podría dificultar la aprobación de préstamos o incluso de alquileres. Además, continuará acumulando intereses moratorios.
+Cliente: No sabía que era tan grave. ¿Qué opciones tengo para regularizar mi situación?
+Agente: Podemos ofrecerle un plan de pagos fraccionados. ¿Cuándo cree que podría realizar al menos el pago mínimo?
+Cliente: Debería recibir mi sueldo retrasado este viernes. ¿Podríamos programar el pago para ese día?
+Agente: Perfecto. Programaré el cargo automático para el viernes. ¿De acuerdo?
+Cliente: Sí, estoy de acuerdo. Gracias por su comprensión.
+Agente: No hay problema. Si necesita realizar algún cambio antes del viernes, no dude en comunicarse con nosotros.

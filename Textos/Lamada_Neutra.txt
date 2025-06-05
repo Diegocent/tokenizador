@@ -1,0 +1,17 @@
+Agente: Hola, buen día. ¿Con quién tengo el gusto?
+Cliente: Hola, soy Juan Pérez. Tengo un problema con el pedido que recibí ayer; vino en mal estado.
+Agente: Lamento mucho este inconveniente. Entiendo su situación y será un placer asistirle.
+Cliente: Gracias, pero ya es la segunda vez que ocurre algo así. Esto es fatal para mi empresa.
+Agente: Comprendo, señor Pérez. Por favor, indíqueme su número de pedido para verificarlo.
+Cliente: Claro, el número es 789456. No quiero perder mi tiempo en llamadas inutiles.
+Agente: Comprendo su molestia. Revisaré la información de inmediato.
+Cliente: Además, el representante anterior fue un tonto que no resolvió nada.
+Agente: Lamento esa experiencia negativa. Ahora le daré una solución precisa.
+Agente: Veo que el producto llegó con piezas rotas; le ofreceremos reemplazo o reembolso. ¿Cuál prefiere?
+Cliente: Prefiero el reemplazo, pero necesito que llegue en excelente condición.
+Agente: Claro, haremos que el nuevo envío esté en perfecto estado. Será despachado hoy mismo.
+Cliente: Bien, espero que esta vez no haya más inconvenientes ni retrasos.
+Agente: Será atendido con el mayor cuidado. Apreciamos su paciencia.
+Cliente: Gracias por su apoyo; aprecio que me brinden una solución rápida.
+Agente: Ha sido un gusto servirle. Gracias por su tiempo. Que tenga un excelente día.
+Cliente: Adiós.

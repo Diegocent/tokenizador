@@ -1,0 +1,17 @@
+Agente: Hola, buenos días. ¿Con quién tengo el gusto?
+Cliente: Buenas, soy Juan Arias y tengo un problema con mi factura.
+Agente: Lamento mucho esa situación y entiendo su frustración.
+Cliente: Hace unos días realicé un pago, pero el sistema arrojó un error fatal y todo está mal.
+Agente: Le pido disculpas; fue un incidente pésimo. Estamos aquí para servirle y dar una solución precisa.
+Cliente: Pero he intentado varias veces y me siento inútil tratando de entender el portal.
+Agente: Claro, yo puedo ayudarle; por favor, facilite información adicional.
+Cliente: No encuentro dónde ingresar mi número de cliente y la interfaz es tonto.
+Agente: Entiendo; necesito verificar su número. ¿Me lo puede proporcionar?
+Cliente: Aquí está: 45872. Espero que esta vez no sea inútil su atención.
+Agente: Gracias, señor Arias. Ya veo su cuenta; todo está correcto y el cargo se anulará enseguida.
+Cliente: Eso es bueno, pero quiero estar seguro de que no habrá retraso ni más problema.
+Agente: Hemos programado la eliminación del cargo; estará resuelto en unos minutos y podrá acceder.
+Cliente: Perfecto, muchas gracias. Aprecio su paciencia.
+Agente: Ha sido un placer atenderle.
+Cliente: La atención ha sido excelente.
+Agente: Gracias por su tiempo; buen día.

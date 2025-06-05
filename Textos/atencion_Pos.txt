@@ -1,0 +1,19 @@
+Agente: Le habla Pablo, ¿en qué puedo ayudarle?
+Cliente: Su servicio es pésimo, quiero cancelar todo.
+Agente: Lamento mucho la experiencia, ¿puede explicarme lo sucedido?
+Cliente: No tengo por qué repetirlo, solo quiero que me saquen del sistema.
+Agente: Para eso necesito su número de cliente, por favor.
+Cliente: ¡Ya deberían tenerlo! No pienso dar más datos.
+Agente: Si no me facilita la información no podré ayudarle.
+Cliente: ¡Inútiles! Olvídenlo.
+Agente: Lamento su decisión. Si cambia de opinión, estamos para servirle.
+Cliente: no entendí bien lo anterior.
+Agente: le daré una respuesta más precisa.
+Cliente: necesito una solución definitiva.
+Agente: voy a escalar esto con mi supervisor.
+Cliente: necesito una solución definitiva.
+Agente: déjeme verificar nuevamente.
+Cliente: necesito una solución definitiva.
+Agente: le daré una respuesta más precisa.
+Cliente: necesito una solución definitiva.
+Agente: voy a escalar esto con mi supervisor.
