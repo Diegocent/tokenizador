@@ -1,5 +1,16 @@
 # Informe del Trabajo Práctico: Análisis de Interacciones en Contact Centers con Speech Analytics y Tokenización
 
+# Datos para la entrega entrega
+
+### Integrantes:
+
+- Diego Rubén Villalba Centurión
+- Juan Elias Olmedo Martinez
+
+### Código fuente:
+
+[https://github.com/Diegocent/tokenizador](https://github.com/Diegocent/tokenizador)
+
 # Resumen Ejecutivo
 
 El objetivo de este trabajo práctico es implementar un sistema integral que procese las interacciones comunes en un Contact Center y que, utilizando técnicas avanzadas de tokenización, identifique palabras clave, evalúe la calidad de la comunicación y verifique el seguimiento del protocolo de atención al cliente.
